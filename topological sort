@@ -1,0 +1,46 @@
+class Solution {
+    public static ArrayList<Integer> topoSort(int V, int[][] edges) {
+        // code here
+        ArrayList<Integer> ls=new ArrayList<>();
+        Stack<Integer> stack=new Stack<>();
+      int n = V;
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
+
+        for (int[] edge : edges) {
+            adj.get(edge[0]).add(edge[1]);
+          
+        }
+        boolean [] visit = new boolean[n];
+
+        for(int i=0;i<n;i++){
+            if(!visit[i]){
+                helper(i,adj,visit,stack); 
+            }
+        }
+       
+       while(!stack.isEmpty()){
+           ls.add(stack.pop());
+       }
+       return ls;
+    }
+    
+    public static void helper(int s,ArrayList<ArrayList<Integer>> adj,boolean [] visit,Stack<Integer> stack){
+        visit[s] = true;
+        
+        for(int elem:adj.get(s)){
+            if(!visit[elem]){
+                helper(elem,adj,visit,stack);
+            }
+           
+        }
+        stack.push(s);
+        
+    }
+}
+//jb saare neighbours traverse ho jayein to hi us node ko stack me dalna hai
+//isme hum dfs use kr rhe hain
+//or fir lotte me sTACk se pop krke answer me dal dena hai
+//kahn's algo dekhna
