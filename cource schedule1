@@ -1,0 +1,50 @@
+class Solution {
+    public boolean canFinish(int V, int[][] edges) {
+        ArrayList<Integer> ls=new ArrayList<>();
+        Stack<Integer> stack=new Stack<>();
+      int n = V;
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
+
+        for (int[] edge : edges) {
+            adj.get(edge[1]).add(edge[0]);
+          
+        }
+        boolean [] visit = new boolean[n];
+        boolean[] recStack = new boolean[V]; // added for cycle detection
+
+        for(int i=0;i<V;i++){
+            if(!visit[i]){
+            if (helper(i, adj, visit, recStack, stack)) {
+                    return false; // cycle detected
+                }
+
+            }
+        }
+       
+       while(!stack.isEmpty()){
+           ls.add(stack.pop());
+       }
+       if(ls.size()==V) return true;
+       return false;
+    }
+    
+    public static boolean helper(int s,ArrayList<ArrayList<Integer>> adj,boolean [] visit, boolean[] recStack,Stack<Integer> stack){
+        visit[s] = true;
+        recStack[s] = true;
+        for(int elem:adj.get(s)){
+             if (!visit[elem]) {
+                if (helper(elem, adj, visit, recStack, stack)) return true;
+            } else if (recStack[elem]) {
+                return true; // cycle detected
+            }
+           
+        }
+        recStack[s] = false;
+        stack.push(s);
+        return false;
+
+    }
+}

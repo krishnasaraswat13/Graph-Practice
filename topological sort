@@ -9,7 +9,7 @@ class Solution {
             adj.add(new ArrayList<>());
         }
 
-        for (int[] edge : edges) {
+        for (int[] edge : edges) {                    
             adj.get(edge[0]).add(edge[1]);
           
         }
