@@ -1,0 +1,50 @@
+//bfs se
+class Pair{
+    int f;
+    int s;
+    int t;
+    Pair(int f,int s,int t){
+        this.f=f;
+        this.s=s;
+        this.t=t;
+    }
+}
+class Solution {
+    public int[][] updateMatrix(int[][] mat) {
+        int n=mat.length;
+        int m=mat[0].length;
+        int vis[][]=new int[n][m];
+        int dist[][]=new int[n][m];
+        Queue<Pair> q=new LinkedList<>();
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(mat[i][j]==0){
+                    vis[i][j]=1;
+                    q.add(new Pair(i,j,0));
+                }
+                else{
+                    vis[i][j]=0;
+                }
+            }
+        }
+        while(!q.isEmpty()){
+            int r=q.peek().f;
+            int c=q.peek().s;
+            int s=q.peek().t;
+            q.remove();
+            dist[r][c]=s;
+            int arr[]=new int[]{-1,1,0,0};
+            int arr2[]=new int[]{0,0,1,-1};
+            for(int i=0;i<4;i++){
+                int nr=r+arr[i];
+                int nc=c+arr2[i];
+                if(nr>=0 && nr<n && nc>=0 && nc<m && vis[nr][nc]==0){
+                    vis[nr][nc]=1;
+                    q.add(new Pair(nr,nc,s+1));
+                }
+            }
+
+        }
+        return dist;
+    }
+}

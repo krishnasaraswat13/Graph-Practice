@@ -1,0 +1,45 @@
+class Solution {
+    void dfs(int r,int c,int vis[][],int board[][]){
+        vis[r][c]=1;
+        int arr[]={-1,1,0,0};
+        int arr2[]={0,0,1,-1};
+        for(int i=0;i<4;i++){
+            int nr=r+arr[i];
+            int nc=c+arr2[i];
+            if(nr>=0 && nr<board.length && nc>=0 && nc<board[0].length && vis[nr][nc]==0 && board[nr][nc]==1){
+                dfs(nr,nc,vis,board);
+            }
+        }
+    }
+    public int numEnclaves(int[][] board) {
+        int n=board.length;
+        int m=board[0].length;
+        int vis[][]=new int[n][m];
+        for(int i=0;i<m;i++){
+            if(vis[0][i]==0 && board[0][i]==1){
+                dfs(0,i,vis,board);
+            }
+            if(vis[n-1][i]==0 && board[n-1][i]==1){
+                dfs(n-1,i,vis,board);
+            }
+        }
+        for(int i=0;i<n;i++){
+            if(vis[i][0]==0 && board[i][0]==1){
+                dfs(i,0,vis,board);
+            }
+            if(vis[i][m-1]==0 && board[i][m-1]==1){
+                dfs(i,m-1,vis,board);
+            }
+        }
+
+        int cnt=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(board[i][j]==1 && vis[i][j]==0){
+                    cnt++;
+                }
+            }
+        }
+        return cnt;
+    }
+}

@@ -1,0 +1,139 @@
+//tle using out degree top
+class Solution {
+    public List<Integer> eventualSafeNodes(int[][] graph) {
+         int[] outdegree = new int[graph.length];
+
+        for (int i = 0; i < graph.length; i++) {
+            for (int j=0;j<graph[i].length;j++) {
+                outdegree[i]++;
+            }
+        }
+
+        Queue<Integer> q = new LinkedList<>();
+        for (int i = 0; i < graph.length; i++) {
+            if (outdegree[i] == 0) {
+                q.add(i);
+            }
+        }
+
+        List<Integer> topo = new ArrayList<>();
+       
+
+        while (!q.isEmpty()) {
+            int node = q.poll();
+            topo.add(node);
+
+           for (int i = 0; i < graph.length; i++) {
+            for (int j=0;j<graph[i].length;j++) {
+                if(graph[i][j]==node){
+                    outdegree[i]--;
+                
+                    if (outdegree[i] == 0) {
+                        q.add(i);
+                    }
+                }
+            }
+           }
+        }
+        Collections.sort(topo);
+        return topo;
+    }
+}
+//no tle
+class Solution {
+    public List<Integer> eventualSafeNodes(int[][] graph) {
+        int n = graph.length;
+        List<List<Integer>> revGraph = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            revGraph.add(new ArrayList<>());
+        }
+
+        int[] outdegree = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            outdegree[i] = graph[i].length;
+            for (int node : graph[i]) {
+                revGraph.get(node).add(i);
+            }
+        }
+
+        Queue<Integer> q = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            if (outdegree[i] == 0) {
+                q.add(i);
+            }
+        }
+
+        List<Integer> safeNodes = new ArrayList<>();
+
+        while (!q.isEmpty()) {
+            int node = q.poll();
+            safeNodes.add(node);
+
+            for (int parent : revGraph.get(node)) {
+                outdegree[parent]--;
+                if (outdegree[parent] == 0) {
+                    q.add(parent);
+                }
+            }
+        }
+
+        Collections.sort(safeNodes);
+        return safeNodes;
+    }
+}
+
+//for gfg
+class Solution {
+    public ArrayList<Integer> safeNodes(int V, int[][] edges) {
+        // Code here
+        
+          List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            graph.add(new ArrayList<>());
+        }
+
+        for (int[] edge : edges) {
+            graph.get(edge[0]).add(edge[1]);
+        }
+
+        int n = V;
+        List<List<Integer>> revGraph = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            revGraph.add(new ArrayList<>());
+        }
+
+        int[] outdegree = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            outdegree[i] = graph.get(i).size();
+            for (int node : graph.get(i)) {
+                revGraph.get(node).add(i);
+            }
+        }
+
+        Queue<Integer> q = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            if (outdegree[i] == 0) {
+                q.add(i);
+            }
+        }
+
+        ArrayList<Integer> safeNodes = new ArrayList<>();
+
+        while (!q.isEmpty()) {
+            int node = q.poll();
+            safeNodes.add(node);
+
+            for (int parent : revGraph.get(node)) {
+                outdegree[parent]--;
+                if (outdegree[parent] == 0) {
+                    q.add(parent);
+                }
+            }
+        }
+
+        Collections.sort(safeNodes);
+        return safeNodes;
+    }
+}

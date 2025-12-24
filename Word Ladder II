@@ -1,0 +1,71 @@
+class Pair {
+    String first;
+    int second;
+    Pair(String _first, int _second) {
+        this.first = _first;
+        this.second = _second;
+    }
+}
+
+class Solution {
+    public static void dfs(String word,List<String> seq,List<List<String>> ans, HashMap<String,Integer> mpp,String b){
+        if(word.equals(b)){
+            List<String> temp=new ArrayList<>(seq);
+            Collections.reverse(temp);
+            ans.add(temp);
+            return;
+        }
+        int steps = mpp.get(word);
+        int sz = word.length();
+        for(int i = 0; i < sz; ++i) {
+            for(char ch = 'a'; ch <= 'z'; ++ch) {
+                char[] replacedCharArray = word.toCharArray();
+                replacedCharArray[i] = ch;
+                String replacedWord = new String(replacedCharArray);
+                if(mpp.containsKey(replacedWord) && mpp.get(replacedWord) + 1 == steps) {
+                    seq.add(replacedWord);
+                    dfs(replacedWord, seq,ans,mpp,b);
+                    seq.remove(seq.size() - 1);
+                }
+            }
+        }
+    }
+    public List<List<String>> findLadders(String startWord, String targetWord, List<String> wordList) {
+        Queue<Pair> q = new LinkedList<>();
+        q.add(new Pair(startWord, 1));
+        HashMap<String,Integer> mpp=new HashMap<>();
+        mpp.put(startWord,1);
+        Set<String> st = new HashSet<String>();
+        int len = wordList.size();
+        for(int i = 0; i < len; i++) {
+            st.add(wordList.get(i));
+        }
+
+        st.remove(startWord);
+        while(!q.isEmpty()) {
+            String word = q.peek().first;
+            int steps = q.peek().second;
+            q.remove();
+            if(word.equals(targetWord)) break;
+            for(int i = 0; i < word.length(); i++) {
+                for(char ch = 'a'; ch <= 'z'; ch++) {
+                    char[] replacedCharArray = word.toCharArray();
+                    replacedCharArray[i] = ch;
+                    String replacedWord = new String(replacedCharArray);
+                    if(st.contains(replacedWord)) {
+                        st.remove(replacedWord);
+                        q.add(new Pair(replacedWord, steps + 1));
+                        mpp.put(replacedWord,steps+1);
+                    }
+                }
+            }
+        }
+        List<List<String>> ans=new ArrayList<>();
+        if(mpp.containsKey(targetWord)==true){
+            List<String> seq=new ArrayList<>();
+            seq.add(targetWord);
+            dfs(targetWord,seq,ans,mpp,startWord);
+        }
+        return ans;
+    }
+}

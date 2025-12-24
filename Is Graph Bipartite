@@ -1,0 +1,35 @@
+//dfs use
+
+class Solution {
+    public boolean isBipartite(int[][] graph) {
+        //bippartite can be understanded through no two adjacent nodes have same colour
+        int v=graph.length;
+        int color[]=new int[v];
+        Arrays.fill(color,-1);
+        for(int i=0;i<v;i++){
+            if(color[i]==-1){
+                if(dfs(i,0,color,graph)==false){
+                    return false;
+                }
+            }
+        }
+        return true;
+        
+
+    }
+    public static boolean dfs(int idx,int cl,int[] color,int[][] graph){
+        color[idx]=cl;
+        for(int i=0;i<graph[idx].length;i++){
+            if(color[graph[idx][i]]==-1){
+                if(dfs(graph[idx][i],1-cl,color,graph)==false){
+                    return false;
+                }
+
+            }
+            if(color[graph[idx][i]]==cl){
+                return false;
+            }
+        }
+        return true;
+    }
+}

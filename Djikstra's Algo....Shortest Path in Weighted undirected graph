@@ -1,0 +1,124 @@
+//using pair class not parent array// almost as djisktra's algo
+//but by myself
+class Pair{
+    int d;
+    int node;
+    Pair(int node,int d){
+        this.node=node;
+        this.d=d;
+    }
+}
+class Solution {
+    public List<Integer> shortestPath(int n, int m, int edges[][]) {
+        //  Code Here.
+        int V=n+1;
+         List<List<Pair>>adj=new ArrayList<>();
+         for(int i=0;i<V;i++){
+             adj.add(new ArrayList<>());
+         }
+         for(int i=0;i<edges.length;i++){
+              int x=edges[i][0];
+              int y=edges[i][1];
+              int z=edges[i][2];
+              adj.get(x).add(new Pair(y,z));
+              adj.get(y).add(new Pair(x,z));
+         }
+        Pair dist[]=new Pair[V];
+        for(int i=0;i<dist.length;i++){
+            dist[i]=new Pair(-1,Integer.MAX_VALUE);
+        }
+       
+        dist[1]=new Pair(1,0); 
+        
+        PriorityQueue<Pair> q=new PriorityQueue<>((a, b) -> a.d - b.d);
+         q.add(new Pair(1,0));
+         while(!q.isEmpty()){
+             int node=q.peek().node;
+             int dis=q.peek().d;
+             q.remove();
+             for(int i=0;i<adj.get(node).size();i++){
+                 if(dist[adj.get(node).get(i).node].d>dis+adj.get(node).get(i).d){
+                     dist[adj.get(node).get(i).node]=new Pair(node,dis+adj.get(node).get(i).d);
+                     q.add(new Pair(adj.get(node).get(i).node,dist[adj.get(node).get(i).node].d));
+                 }
+             }
+         }
+        //  for(int i=1;i<dist.length;i++){
+        //      if(dist[i].d==Integer.MAX_VALUE){
+        //          dist[i].d=-1;
+        //      }
+        //  }
+        
+        if (dist[n].d == Integer.MAX_VALUE) return Arrays.asList(-1);
+    
+         List<Integer> ls=new ArrayList<>();
+         
+         int r=n;
+         while(r!=1){
+             ls.add(r);
+             r=dist[r].node;
+         }
+         ls.add(1);
+         ls.add(dist[n].d);
+         Collections.reverse(ls);
+         return ls;
+    
+         
+    }
+}
+//djikstra's algo with parent array
+class Solution {
+    public List<Integer> shortestPath(int n, int m, int edges[][]) {
+        //  Code Here.
+        int V=n+1;
+         List<List<Pair>>adj=new ArrayList<>();
+         for(int i=0;i<V;i++){
+             adj.add(new ArrayList<>());
+         }
+         for(int i=0;i<edges.length;i++){
+              int x=edges[i][0];
+              int y=edges[i][1];
+              int z=edges[i][2];
+              adj.get(x).add(new Pair(y,z));
+              adj.get(y).add(new Pair(x,z));
+         }
+        int dist[]=new int[V];
+        int parent[]=new int[V];
+        for(int i=0;i<dist.length;i++){
+            dist[i]=Integer.MAX_VALUE;
+            parent[i]=i;
+        }
+       
+        dist[1]=0; 
+        
+        PriorityQueue<Pair> q=new PriorityQueue<>((a, b) -> a.d - b.d);
+         q.add(new Pair(1,0));
+         while(!q.isEmpty()){
+             int node=q.peek().node;
+             int dis=q.peek().d;
+             q.remove();
+             for(int i=0;i<adj.get(node).size();i++){
+                 if(dist[adj.get(node).get(i).node]>dis+adj.get(node).get(i).d){
+                     dist[adj.get(node).get(i).node]=dis+adj.get(node).get(i).d;
+                     parent[adj.get(node).get(i).node]=node;
+                     q.add(new Pair(adj.get(node).get(i).node,dist[adj.get(node).get(i).node]));
+                 }
+             }
+         }
+         if (dist[n] == Integer.MAX_VALUE) return Arrays.asList(-1);
+    
+         List<Integer> ls=new ArrayList<>();
+         
+         int r=n;
+         while(r!=1){
+             ls.add(r);
+             r=parent[r];
+         }
+         ls.add(1);
+         ls.add(dist[n]);
+         Collections.reverse(ls);
+         return ls;
+    
+         
+    }
+}
