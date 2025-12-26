@@ -1,0 +1,45 @@
+// User function Template for Java
+
+class Pair{
+    int d;
+    int node;
+    Pair(int node,int d){
+        this.node=node;
+        this.d=d;
+    }
+}
+class Solution {
+    int minimumMultiplications(int[] arr, int src, int end) {
+
+        // Your code here
+        
+         int dist[]=new int[100000];
+         Arrays.fill(dist,Integer.MAX_VALUE);
+         dist[src]=0;
+         Queue<Pair> q=new LinkedList<>();
+         q.add(new Pair(src,0));
+         while(!q.isEmpty()){
+             int node=q.peek().node;
+             int dis=q.peek().d;
+             q.remove();
+             for(int i=0;i<arr.length;i++){
+                 int r=arr[i]*node;
+                 if(arr[i]*node>9999){
+                     r=(arr[i]*node)%100000;
+                 }
+                 if(dist[r]>dis+1){
+                     dist[r]=dis+1;
+                     q.add(new Pair(r,dis+1));
+                 }
+             }
+         }
+         for(int i=0;i<dist.length;i++){
+             if(dist[i]==Integer.MAX_VALUE){
+                 dist[i]=-1;
+             }
+         }
+         return dist[end];
+    }
+}
+
+//treat every multiplication result no as a new node  so the total nodes will be 10000 as we are using md op.. and the no which is coming after mul will considered as connected nodes and src eilll be start no and end will be destination for wihich we have to calc leat no of operations //dikstra algorithm can be applied

@@ -1,0 +1,54 @@
+class Solution {
+    class Pair {
+    int node;
+    int weight;
+    Pair(int n,int w) {
+        node=n;
+        weight=w;
+    }
+}
+    public int networkDelayTime(int[][] edges, int V, int src) {
+         ArrayList<ArrayList<Pair>> adj=new ArrayList<>();
+        for(int i=0;i<V+1;i++){
+            adj.add(new ArrayList<>());
+        }
+        for(int i=0;i<edges.length;i++){
+            int u=edges[i][0];
+            int v=edges[i][1];
+            int w=edges[i][2];
+            adj.get(u).add(new Pair(v,w));
+            
+        }
+       int[] dist=new int[V+1];
+       Arrays.fill(dist,Integer.MAX_VALUE);
+       dist[src]=0;
+       
+       PriorityQueue<Pair> pq=new PriorityQueue<>((a,b)->a.weight-b.weight);
+       pq.add(new Pair(src,0));
+       
+       while(!pq.isEmpty()){
+           Pair curr=pq.poll();
+           int u=curr.node;
+           int w=curr.weight;
+           if (w > dist[u]) continue;
+
+           for(Pair nbr :adj.get(u)){
+               int v=nbr.node;
+               int wt=nbr.weight;
+               
+               if(dist[u]+wt<dist[v]){
+                   dist[v]=dist[u]+wt;
+                   pq.add(new Pair(v,dist[v]));
+               }
+           }
+       }
+       int maxTime = 0;
+        for (int i = 1; i <= V; i++) {
+            if (dist[i] == Integer.MAX_VALUE) return -1;
+            maxTime = Math.max(maxTime, dist[i]);
+        }
+
+        return maxTime;
+
+    }
+}

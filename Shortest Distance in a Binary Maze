@@ -1,0 +1,51 @@
+class Pair {
+    int d, x, y;
+    Pair(int d, int x, int y) {
+        this.d = d;
+        this.x = x;
+        this.y = y;
+    }
+}
+
+class Solution {
+    int shortestPath(int[][] grid, int[] source, int[] destination) {
+        int sx = source[0], sy = source[1];
+        int dx = destination[0], dy = destination[1];
+        int n = grid.length, m = grid[0].length;
+
+        if (grid[sx][sy] == 0 || grid[dx][dy] == 0) return -1;
+
+        Pair[][] dist = new Pair[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                dist[i][j] = new Pair(Integer.MAX_VALUE, i, j);
+            }
+        }
+
+        dist[sx][sy] = new Pair(0, sx, sy);
+        PriorityQueue<Pair> q = new PriorityQueue<>((a, b) -> a.d - b.d);
+        q.add(new Pair(0, sx, sy));
+
+        int[] dxArr = {-1, 0, 1, 0};
+        int[] dyArr = {0, 1, 0, -1};
+
+        while (!q.isEmpty()) {
+            Pair cur = q.poll();
+            int d = cur.d, x = cur.x, y = cur.y;
+
+            if (x == dx && y == dy) return d; // early exit
+
+            for (int i = 0; i < 4; i++) {
+                int newx = x + dxArr[i], newy = y + dyArr[i];
+                if (newx >= 0 && newx < n && newy >= 0 && newy < m && grid[newx][newy] == 1) {
+                    if (dist[newx][newy].d > d + 1) {
+                        dist[newx][newy].d = d + 1;
+                        q.add(new Pair(d + 1, newx, newy));
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+}

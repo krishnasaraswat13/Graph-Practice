@@ -1,0 +1,43 @@
+class Pair {
+    int d, x, y;
+    Pair(int d, int x, int y) {
+        this.d = d;
+        this.x = x;
+        this.y = y;
+    }
+}
+class Solution {
+    public int minimumEffortPath(int[][] grid) {
+        int n = grid.length, m = grid[0].length;
+        int[][] dist = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                dist[i][j] = Integer.MAX_VALUE;
+            }
+        }
+        dist[0][0] = 0;
+        PriorityQueue<Pair> q = new PriorityQueue<>((a, b) -> a.d - b.d);
+        q.add(new Pair(0, 0, 0));
+        int[] dxArr = {-1, 0, 1, 0};
+        int[] dyArr = {0, 1, 0, -1};
+
+        while (!q.isEmpty()) {
+            Pair cur = q.poll();
+            int d = cur.d, x = cur.x, y = cur.y;
+
+            //if (x == dx && y == dy) return d; // early exit
+
+            for (int i = 0; i < 4; i++) {
+                int newx = x + dxArr[i], newy = y + dyArr[i];
+                if (newx >= 0 && newx < n && newy >= 0 && newy < m ) {
+                    if (dist[newx][newy] > Math.max(d,Math.abs(grid[newx][newy]-grid[x][y]) )) {
+                        dist[newx][newy] =  Math.max(d,Math.abs(grid[newx][newy]-grid[x][y]) );
+                        q.add(new Pair(Math.max(d,Math.abs(grid[newx][newy]-grid[x][y]) ), newx, newy));
+                    }
+                }
+            }
+        }
+
+        return dist[n-1][m-1];
+    }
+}
