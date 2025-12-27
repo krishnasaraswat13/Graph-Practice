@@ -1,0 +1,46 @@
+//used to detect shortest path in graph with negative weight cycles
+//means if there is a negative weight cycle in the graph then also it will detect it and will give correct shortest path
+//time complexity O(VE) where v is no of vertices and e is no of edges
+//it only used in directed graph but if we want to use it in undirected then we should treat that graoh as directed by consider each edge as two directed edges
+//it used in cyclic graphs also 
+
+//it uses n-1 iterations and we relax the edges by updating distances //we use n-1 iteration bcz this is the maximum iteration to fill all distance in worst case
+//it is used in detecting negative cycle as at max it will take n-1 iteration to fill minimum distance but if in nth iteration if it still reduce distance then it means negative cycle exists
+
+//distance from the src and detect neg cycle if exist
+
+// User function Template for Java
+
+class Solution {
+    public int[] bellmanFord(int V, int[][] edges, int src) {
+        // code here
+        int[] dist = new int[V];
+        Arrays.fill(dist, (int)1e8); 
+        dist[src] = 0;
+
+      
+        for (int i = 0; i < V - 1; i++) {
+            for (int[] edge : edges) {
+                int u = edge[0];
+                int v = edge[1];
+                int wt = edge[2];
+                if (dist[u] != (int)1e8 && dist[u] + wt < dist[v]) {
+                    dist[v] = dist[u] + wt;
+                }
+            }
+        }
+
+      
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            int wt = edge[2];
+            if (dist[u] != (int)1e8 && dist[u] + wt < dist[v]) {
+                return new int[]{-1}; 
+            }
+        }
+        return dist;
+    }
+}
+
+

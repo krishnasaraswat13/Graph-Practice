@@ -1,0 +1,53 @@
+//it helps to find shortest distance in multisource shortest path and also helps to detect negative cycle like  bellman ford
+//ngative cycle means distance is decreasing in every iteration and keep on decreasing dur to negative edge
+//in this we make distance matrix and here we take all nodes as source one by one and update distance matrix for example first we make a distance matrix in which we store all connected distances then we take these distances via 0 i mean if we wan to reach 2 to 3 then it will be 2 to 0 thn 0 to 3 and store the smin of this or already stored one//
+//we repeat this process for all nodes by taking matrix via that node and at the last there is a matrix which contains shortest distances between all nodes
+//how we detect cycle--> in a cycle we reach ourself at zero but if there is negative cycle present then the cost to reach ourself is negative which means there is a negative cycle
+
+import java.util.*;
+
+public class FloydWarshall {
+    public static void floydWarshall(int[][] matrix) {
+        int n = matrix.length;
+        int INF = (int)1e9;
+
+        // Step 1: Initialize unreachable paths
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == -1) {
+                    matrix[i][j] = INF;
+                }
+                if (i == j) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+
+        // Step 2: Core Floyd-Warshall algorithm
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (matrix[i][k] < INF && matrix[k][j] < INF) {
+                        matrix[i][j] = Math.min(matrix[i][j], matrix[i][k] + matrix[k][j]);
+                    }
+                }
+            }
+        }
+
+        // Step 3: Restore unreachable paths
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == INF) {
+                    matrix[i][j] = -1;
+                }
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            if (matrix[i][i] < 0) {
+                System.out.println("Negative weight cycle detected");
+                break;
+            }
+        }
+    
+    }
+}
