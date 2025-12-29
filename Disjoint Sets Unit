@@ -1,0 +1,93 @@
+//In Dsu we have two main operations find and union 
+//Intro- Dsu is used to keep track of elements which are split into one or more disjoint sets
+//find- it helps to find the parent of a node
+//In this we do path compression i.e we directly connect the node to its ultimate parent so that next time we can reach to parent in o(1) time
+//union- it helps to connect two nodes
+//In this we do union by rank i.e we connect the smaller rank tree under the larger
+//This helps to keep the tree flat and avoid skewed trees
+//Time complexity- amortized o(alpha(n)) where alpha is inverse ackerman function which for all practical purposes can be considered constant
+//which is nearly constant time
+//this is the basic implementation of disjoint set union with path compression and union by rank
+//Dsu is used for finding connected components in a graph ,kruskal's algorithm etc
+
+//Union by rank and path compression
+class Unionfind{
+    int[] parent;
+    int[] rank;
+    public Unionfind(int V){
+        parent=new int[V+1];
+        rank=new int[V+1];
+        for(int i=0;i<V;i++){
+            parent[i]=i;
+            rank[i]=0; 
+        }
+
+    }
+    int find(int u){
+        if(parent[u]==u){
+            return u;
+        }
+        return parent[u]=find(parent[u]); //path compression
+    }
+    boolean union(int u,int v){
+        int pu=find(u);
+        int pv=find(v);
+        if(pu==pv) return false;
+        if(rank[pu]<rank[pv]){
+            parent[pu]=pv;
+        }else if(rank[pv]<rank[pu]){
+            parent[pv]=pu;
+        }else{
+            parent[pv]=pu;
+            rank[pu]++;
+        }
+        return true;
+    }
+}
+class Main {
+    public static void main(String[] args) {
+        Unionfind uf=new Unionfind(5);
+        uf.union(0,1);
+        uf.find(1);
+        uf.union(1,2);  
+        uf.union(3,4);
+        System.out.println(uf.find(0));
+    }
+}
+
+//////dsu by size
+//in this we initialize the parent array and size array
+//in size array we store the size of each component
+//while doing union we attach the smaller component to the larger component and update the size of the larger component
+class Unionfind{
+    int[] parent;
+    int[] size;
+    public Unionfind(int V){
+        parent=new int[V+1];//here we take V+1 to avoid index out of bound errors
+        size=new int[V+1];
+        for(int i=0;i<V;i++){
+            parent[i]=i;
+            size[i]=1; 
+        }
+
+    }
+    int find(int u){
+        if(parent[u]==u){
+            return u;
+        }
+        return parent[u]=find(parent[u]); //path compression
+    }
+    boolean union(int u,int v){
+        int pu=find(u);
+        int pv=find(v);
+        if(pu==pv) return false;
+        if(size[pu]<size[pv]){
+            parent[pu]=pv;
+            size[pv]+=size[pu];
+        }else{
+            parent[pv]=pu;
+            size[pu]+=size[pv];
+        }
+        return true;
+    }
+}
