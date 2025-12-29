@@ -1,0 +1,52 @@
+//A tree in which we can reach every vertex from any other vertex is called a spanning tree.
+//in this there are n nodes ans n-1 edges
+
+//Any treewhich has the minimum sum of weights of edges is called minimum spanning tree
+//draw a mst from a given graph using prims algorithm
+
+class Pair {
+    int d, x;
+    Pair(int d, int x) {
+        this.d = d;
+        this.x = x;
+    }
+}
+
+class Solution {
+    public int spanningTree(int V, int[][] edges) {
+        // code here
+        List<List<Pair>>al=new ArrayList<>();
+         for(int i=0;i<V;i++){
+             al.add(new ArrayList<>());
+         }
+         for(int i=0;i<edges.length;i++){
+              int x=edges[i][0];
+              int y=edges[i][1];
+              int z=edges[i][2];
+              al.get(x).add(new Pair(z,y));
+              al.get(y).add(new Pair(z,x));
+         }
+         PriorityQueue<Pair> q=new PriorityQueue<>((a,b)->a.d-b.d);
+         int vis[]=new int[V];
+         int ans=0;
+         q.add(new Pair(0,0));
+         //vis[0]=1;
+         while(!q.isEmpty()){
+             int node=q.peek().x;
+             int wt=q.peek().d;
+             q.remove();
+             if(vis[node]==1){
+                 continue;
+             }
+             vis[node]=1;
+             ans+=wt;
+             for(int i=0;i<al.get(node).size();i++){
+                 if(vis[al.get(node).get(i).x]==0){
+                     q.add(new Pair(al.get(node).get(i).d,al.get(node).get(i).x));
+                 }
+             }
+         }
+         return ans;
+    }
+}
+//note if we want to store that which edges are included in the mst we can maintain a parent array and update it whenever we add a new node to the mst
