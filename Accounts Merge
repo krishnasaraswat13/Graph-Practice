@@ -1,0 +1,67 @@
+class Solution {
+    static class DisjointSet {
+        int[] parent, size;
+        public DisjointSet(int n) {
+            parent = new int[n];
+            size = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                size[i] = 1;
+            }
+        }
+
+        public int findUPar(int node) {
+            if (node == parent[node]) return node;
+            return parent[node] = findUPar(parent[node]); 
+        }
+
+        public void unionBySize(int u, int v) {
+            int rootU = findUPar(u);
+            int rootV = findUPar(v);
+            if (rootU != rootV) {
+                if (size[rootU] < size[rootV]) {
+                    parent[rootU] = rootV;
+                    size[rootV] += size[rootU];
+                } else {
+                    parent[rootV] = rootU;
+                    size[rootU] += size[rootV];
+                }
+            }
+        }
+    }
+
+    public List<List<String>> accountsMerge(List<List<String>> accounts) {
+        int n=accounts.size();
+        DisjointSet ds=new DisjointSet(n);
+        HashMap<String,Integer> map=new HashMap<>();
+        for(int i=0;i<n;i++){
+            for(int j=1;j<accounts.get(i).size();j++){
+                if(!map.containsKey(accounts.get(i).get(j))){           //first we are storing every mail to a particular index which means this is the person of that mail
+                    map.put(accounts.get(i).get(j),i);
+                }
+                else{
+                    ds.unionBySize(i,map.get(accounts.get(i).get(j)));  //if mail already exist means both the persons are same and we need to unio the both index
+                }
+            }
+        }
+        ArrayList<String> ls[]=new ArrayList[n];
+        for(int i=0;i<n;i++){
+            ls[i]=new ArrayList<String>();
+        }
+        for(Map.Entry<String,Integer> it: map.entrySet()){     //storing every mail to a particular index..mean a name by  finding parent 
+            ls[ds.findUPar(it.getValue())].add(it.getKey());
+        }
+        List<List<String>> ans=new ArrayList<>();
+        for(int i=0;i<n;i++){
+            if(ls[i].size()==0) continue;
+            Collections.sort(ls[i]);
+            List<String> temp=new ArrayList<>();
+            temp.add(accounts.get(i).get(0));
+            for(String t :ls[i]){
+                temp.add(t);
+            }
+            ans.add(temp);
+        }
+        return ans;
+    }
+}

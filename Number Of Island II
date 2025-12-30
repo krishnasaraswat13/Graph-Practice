@@ -1,0 +1,73 @@
+// User function Template for Java
+
+class Solution {
+    static class DisjointSet {
+        int[] parent, size;
+        public DisjointSet(int n) {
+            parent = new int[n];
+            size = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                size[i] = 1;
+            }
+        }
+
+        public int findUPar(int node) {
+            if (node == parent[node]) return node;
+            return parent[node] = findUPar(parent[node]); 
+        }
+
+        public void unionBySize(int u, int v) {
+            int rootU = findUPar(u);
+            int rootV = findUPar(v);
+            if (rootU != rootV) {
+                if (size[rootU] < size[rootV]) {
+                    parent[rootU] = rootV;
+                    size[rootV] += size[rootU];
+                } else {
+                    parent[rootV] = rootU;
+                    size[rootU] += size[rootV];
+                }
+            }
+        }
+    }
+
+    public List<Integer> numOfIslands(int rows, int cols, int[][] operators) {
+        // Your code here
+        int n=operators.length;
+        
+        int vis[][]=new int[rows][cols];
+        DisjointSet ds=new DisjointSet(rows*cols);
+        int cnt=0;
+        List<Integer> ans=new ArrayList<>();
+        for(int i=0;i<n;i++){
+            int r=operators[i][0];
+            int c=operators[i][1];
+            if(vis[r][c]==1){
+                ans.add(cnt);
+                continue;
+            }
+            vis[r][c]=1;
+            cnt++;
+            int arr1[]={-1,0,1,0};
+            int arr2[]={0,1,0,-1};
+            for(int j=0;j<4;j++){
+                int ar=r+arr1[j];
+                int ac=c+arr2[j];
+                if(ar>=0 && ar<rows && ac>=0 && ac<cols){
+                    if(vis[ar][ac]==1){
+                        int node=r*cols+c;
+                        int anode=ar*cols+ac;
+                        if(ds.findUPar(node)!=ds.findUPar(anode)){
+                            cnt--;
+                            ds.unionBySize(node,anode);
+                        }
+                    }
+                }
+            }
+            ans.add(cnt);
+        }
+        return ans;
+        
+    }
+}
