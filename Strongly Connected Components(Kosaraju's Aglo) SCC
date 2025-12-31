@@ -1,0 +1,68 @@
+//Sort all the edges all the edges ac to fininshing time
+//reverse the graph
+//do dfs
+
+//Strongly connected components are the components in which every node is reachable from every other node in that component
+//Kosaraju's algorithm is used to find strongly connected components in a directed graph
+//Time complexity is O(V+E)
+//steps are 
+//1. Do a dfs and store the nodes in stack according to their finishing time
+//2. Reverse the graph
+//3. Do a dfs according to the stack order on the reversed graph and store the components
+//4. Each dfs call will give one strongly connected component
+//5. Return the list of strongly connected components
+//In the reversed graph, we will only be able to reach the nodes which are in the same strongly connected component as the starting node of the dfs call
+
+class Solution {
+    // Function to find number of strongly connected components in the graph.
+    void dfs(int i,int vis[],ArrayList<ArrayList<Integer>> adj,Stack<Integer> st){
+        vis[i]=1;
+        for(Integer it: adj.get(i)){
+            if(vis[it]==0){
+                dfs(it,vis,adj,st);
+            }
+        }
+        st.push(i);
+    }
+    void dfs2(int i,int vis[],ArrayList<ArrayList<Integer>> adj2){
+        vis[i]=1;
+        for(Integer it: adj2.get(i)){
+            if(vis[it]==0){
+                dfs2(it,vis,adj2);
+            }
+        }
+    }
+    
+    public int kosaraju(ArrayList<ArrayList<Integer>> adj) {
+        // code here
+        int n=adj.size();
+        int vis[]=new int[n];
+        Stack<Integer> st=new Stack<>();
+        for(int i=0;i<n;i++){
+            if(vis[i]==0){
+                dfs(i,vis,adj,st);
+            }
+        }
+        ArrayList<ArrayList<Integer>> adj2=new ArrayList<>();
+        for(int i=0;i<n;i++){
+            adj2.add(new ArrayList<>());
+        }
+        for(int i=0;i<n;i++){
+            vis[i]=0;
+            for(Integer it:adj.get(i)){
+                adj2.get(it).add(i);
+            }
+        }
+        int scc=0;
+        while(!st.isEmpty()){
+            int node=st.peek();
+            st.pop();
+            if(vis[node]==0){
+                scc++;
+                dfs2(node,vis,adj2);
+            }
+        }
+        return scc;
+        
+    }
+}

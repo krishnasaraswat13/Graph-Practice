@@ -1,0 +1,88 @@
+class Solution {
+    static class DisjointSet {
+        int[] parent, size;
+        public DisjointSet(int n) {
+            parent = new int[n];
+            size = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                size[i] = 1;
+            }
+        }
+
+        public int findUPar(int node) {
+            if (node == parent[node]) return node;
+            return parent[node] = findUPar(parent[node]); 
+        }
+
+        public void unionBySize(int u, int v) {
+            int rootU = findUPar(u);
+            int rootV = findUPar(v);
+            if (rootU != rootV) {
+                if (size[rootU] < size[rootV]) {
+                    parent[rootU] = rootV;
+                    size[rootV] += size[rootU];
+                } else {
+                    parent[rootV] = rootU;
+                    size[rootU] += size[rootV];
+                }
+            }
+        }
+    }
+    public int largestIsland(int[][] grid) {
+        int n=grid.length;
+        int m=grid[0].length;
+        
+       
+        DisjointSet ds=new DisjointSet(n*m);
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(grid[i][j]==0){
+                    continue;
+                }
+                int arr1[]={-1,0,1,0};
+                int arr2[]={0,1,0,-1};
+                for(int s=0;s<4;s++){
+                    int ar=i+arr1[s];
+                    int ac=j+arr2[s];
+                    if(ar>=0 && ar<n && ac>=0 && ac<m && grid[ar][ac]==1){
+                        int node=i*m+j;
+                        int anode=ar*m+ac;
+                        ds.unionBySize(node,anode);
+
+                    }
+                }
+            }
+        }
+        int mx=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(grid[i][j]==1){
+                    continue;
+                }
+                int arr1[]={-1,0,1,0};
+                int arr2[]={0,1,0,-1};
+                HashSet<Integer> c=new HashSet<>();  //set we are using so that for example if one 0 is converted to 1 and have adj on right so it is connected but also adj on down is also 1 but it is same as the right wala so set will ensure that no duplicat componets aded again so here we store the unique parents then we will find the size of that parent to know how many nodes are there connected
+                for(int s=0;s<4;s++){
+                    int ar=i+arr1[s];
+                    int ac=j+arr2[s];
+                    if(ar>=0 && ar<n && ac>=0 && ac<m && grid[ar][ac]==1){
+                        //int node=r*m+c;
+                        int anode=ar*m+ac;
+                        c.add(ds.findUPar(anode));
+                    }
+                }
+                int t=0;
+                for(Integer p: c){
+                    t+=ds.size[p];
+                }
+                mx=Math.max(mx,t+1);
+            }
+        }
+        for(int i=0;i<n*m;i++){   //this loop is used to ensure if no 0 node is found then mx will be 0 bu we need to return the ans as the max island
+            mx=Math.max(mx,ds.size[ds.findUPar(i)]);
+        }
+        return mx;        
+                        
+    }
+}

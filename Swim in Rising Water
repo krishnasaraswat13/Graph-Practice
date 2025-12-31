@@ -1,0 +1,42 @@
+class Solution {
+    class Pair{
+        int n;int r;
+        int c;
+        Pair(int n,int r,int c){
+            this.n=n;
+            this.r=r;
+            this.c=c;
+        }
+    }
+    public int swimInWater(int[][] grid) {
+        int n=grid.length;
+        int m=grid[0].length;
+        PriorityQueue<Pair> pq=new PriorityQueue<>((a,b)->a.n-b.n);
+        int vis[][]=new int[n][m];
+        pq.add(new Pair(grid[0][0],0,0));
+        int mx=0;
+        while(!pq.isEmpty()){
+    
+            int r=pq.peek().r;
+            int c=pq.peek().c;
+            int t=pq.peek().n;
+            pq.remove();
+           
+            vis[r][c]=1;
+            mx=Math.max(mx,t);
+            if(r==n-1 && c==m-1){
+                break;
+            }
+            int arr1[]={-1,0,1,0};
+            int arr2[]={0,1,0,-1};
+            for(int i=0;i<4;i++){
+                int nr=r+arr1[i];
+                int nc=c+arr2[i];
+                if(nr>=0 && nr<n && nc>=0 && nc<m && vis[nr][nc]==0){
+                    pq.add(new Pair(grid[nr][nc],nr,nc));
+                }
+            }
+        }
+        return mx;
+    }
+}

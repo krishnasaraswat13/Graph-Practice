@@ -1,0 +1,62 @@
+//Bridges is a connection in a graph if we remove it then the graph is divided in 2 or more conponents
+//It uses DFS traversal and low time concept
+//Tarjan's Algorithm
+
+//low is the lowest discovery time reachable from that node except parent node
+//If low[adjacentNode]>discoveryTime[currentNode] then it is a bridge
+//time is global variable which is incremented at every node visit
+
+//Bridge is an edge which when removed increases the number of connected components in a graph
+
+
+class Solution {
+    static int timer=1;
+    public void dfs(int node,int[] tim,int[] low,int[] vis,List<List<Integer>> bridges,int parent,ArrayList<ArrayList<Integer>> adj){
+        vis[node]=1;
+        tim[node]=low[node]=timer;
+        timer++;
+        for(Integer it:adj.get(node)){
+            if(it==parent) continue;
+            
+            if(vis[it]==0){
+                dfs(it,tim,low,vis,bridges,node,adj);
+                low[node]=Math.min(low[node],low[it]);
+                if(low[it]>tim[node]){
+                    bridges.add(Arrays.asList(it,node));
+                }
+            }
+            else{
+                low[node]=Math.min(low[node],low[it]);
+            }
+        }
+    }
+    public List<List<Integer>> criticalConnections(int n, List<List<Integer>> edges) {
+        //int n = V;
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            adj.add(new ArrayList<>());
+        }
+        for (List<Integer> edge : edges) {
+            adj.get(edge.get(0)).add(edge.get(1));
+            adj.get(edge.get(1)).add(edge.get(0));
+        }
+        int vis[]=new int[n];
+        int tim[]=new int[n];
+        int low[]=new int[n];
+        List<List<Integer>> bridges=new ArrayList<>();
+        dfs(0,tim,low,vis,bridges,-1,adj);
+
+        //if asked to sort
+        //bridges.sort((a, b) -> {
+        //     if (!a.get(0).equals(b.get(0))) {
+        //         return a.get(0) - b.get(0);
+        //     }
+        //     return a.get(1) - b.get(1);
+        // });
+
+        return bridges;
+
+    }
+}
+
+
